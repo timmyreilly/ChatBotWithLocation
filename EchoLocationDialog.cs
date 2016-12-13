@@ -27,14 +27,9 @@ namespace Microsoft.Bot.Sample.EchoBot
             }
         }
 
-        public async Task ResumeAfter(IDialogContext context, IAwaitable<IMessageActivity> result)
+        public async Task ResumeAfter(IDialogContext context, IAwaitable<Place> result)
         {
-            var msg = await result; 
-            //var place = msg.Entities;
-
-            var entities = msg.Entities;
-
-            var place = entities?.Where(t => t.Type == "Place").Select(t => t.GetAs<Place>()).FirstOrDefault();
+            var place = await result;
 
             if (place != default(Place))
             {
@@ -57,7 +52,7 @@ namespace Microsoft.Bot.Sample.EchoBot
 
                     }.ToAttachment());
 
-                    reply.Text = place.Address.toString(); 
+                    //reply.Text = place.Address();
 
                     await context.PostAsync(reply);
                 }
@@ -76,7 +71,7 @@ namespace Microsoft.Bot.Sample.EchoBot
     }
 
     [Serializable]
-    public class GenericLocationDialog : IDialog<IMessageActivity>
+    public class GenericLocationDialog : IDialog<Place>
     {
         public async Task StartAsync(IDialogContext context)
         {
@@ -89,7 +84,7 @@ namespace Microsoft.Bot.Sample.EchoBot
             if (msg.ChannelId == "emulator")
             {
                 var reply = context.MakeMessage();
-                reply.Text = "Where would you like the Bacon delivered?";
+                reply.Text = "Please share your lat and lon";
 
                 await context.PostAsync(reply);
                 context.Wait(LocationReceivedAsync);
@@ -103,33 +98,18 @@ namespace Microsoft.Bot.Sample.EchoBot
         public virtual async Task LocationReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var msg = await argument;
-
             //var location = msg.Entities?.Where(t => t.Type == "Place").Select(t => t.GetAs<Place>()).FirstOrDefault();
             // var location = msg;
             // var location = msg.Entities?.Where(t => t.Type == "Place").Select(t => t.GetAs<Place>()).FirstOrDefault();
             //place.Address = "79 Delmar Street San Francisco CA 94117"; 
-            //Place place = new Place();
-            //var g = new GeoCoordinates();
-            //g.Latitude = 37.781106;
-            //g.Longitude = -122.396124;
-            //place.Geo = g;
-            //place.Address = msg.Text; 
 
-            var entity = new Entity();
-
-            entity.SetAs(new Place()
-            {
-                Geo = new GeoCoordinates()
-                {
-                    Latitude = 37.781106,
-                    Longitude = -122.396124,
-                }
-            });
-
-            msg.Entities.Add(entity); 
-
+            Place place = new Place();
+            var g = new GeoCoordinates();
+            g.Latitude = 37.781106;
+            g.Longitude = -122.396124;
+            place.Geo = g; 
             
-            context.Done(msg);
+            context.Done(place);
         }
     }
 
