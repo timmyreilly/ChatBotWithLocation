@@ -10,7 +10,7 @@
 *.sln.docstates
 *.vcxproj.filters
 
-AppSettingsSecrets.config
+web.SECRETS.config
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
