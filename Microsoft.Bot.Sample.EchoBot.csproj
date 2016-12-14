@@ -132,6 +132,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="CarouselCardBacon.cs" />
+    <Compile Include="ContinueOrderDialog.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="DeliverDialog.cs" />
     <Compile Include="EchoAttachmentDialog.cs" />
@@ -142,7 +144,10 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Order.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RootDialog.cs" />
+    <Compile Include="SupportDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -152,7 +157,9 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
-    <None Include="web.SECRETS.config" />
+    <None Include="web.SECRETS.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

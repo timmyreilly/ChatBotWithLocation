@@ -28,7 +28,11 @@ namespace Microsoft.Bot.Sample.EchoBot
                 switch (activity.GetActivityType())
                 {
                     case ActivityTypes.Message:
-                        await Conversation.SendAsync(activity, () => new DeliverDialog(activity.ChannelId));
+                        if (activity.ChannelId.ToLower() == "emulator")
+                        {
+                            await Conversation.SendAsync(activity, () => new RootDialog(activity.ChannelId)); 
+                        }
+                        //await Conversation.SendAsync(activity, () => new DeliverDialog(activity.ChannelId));
                         // await Conversation.SendAsync(activity, () => new EchoDialog();
                         break;
 

@@ -8,20 +8,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
+using Microsoft.Bot.Sample.EchoBot.Models;
 
 namespace Microsoft.Bot.Sample.EchoBot
 {
     [Serializable]
-    public class DeliverDialog: EchoDialog
+    public class DeliverDialog: IDialog<object>
     {
-        private string channelId;
+        private readonly string channelId;
+        private Order order;
 
-        public DeliverDialog(string channelId)
+        public DeliverDialog(string channelId, Order order)
         {
             this.channelId = channelId;
+            this.order = order;
         }
 
-        public override async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+
+        public async Task StartAsync(IDialogContext context)
+        {
+            context.Wait(this.MessageReceivedAsync);
+        }
+        
+        public async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
         {
             var apiKey = WebConfigurationManager.AppSettings["BingMapsApiKey"];
             var options = LocationOptions.UseNativeControl | LocationOptions.ReverseGeocode;
@@ -44,6 +53,7 @@ namespace Microsoft.Bot.Sample.EchoBot
             if (place != null)
             {
                 var address = place.GetPostalAddress();
+                this.order.Postal = place.GetPostalAddress(); 
                 var formatteAddress = string.Join(", ", new[]
                 {
                         address.StreetAddress,
@@ -56,7 +66,7 @@ namespace Microsoft.Bot.Sample.EchoBot
                 await context.PostAsync("Thanks, I will ship it to " + formatteAddress);
             }
 
-            context.Done<string>(null);
+            context.Done<Place>(place);
         }
     }
 }
